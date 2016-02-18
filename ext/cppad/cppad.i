@@ -1,12 +1,19 @@
 %module cppad
 
+%{
+#include <cppad/cppad.hpp>
+namespace RubyCppAD {
+  using namespace CppAD;
+};
+%}
+
 %include std_vector.i
+%template(StdVectorADDoublePtr) ::std::vector<RubyCppAD::AD<double>*>;
 
 %{
-
-#include <cppad/cppad.hpp>
-
 namespace RubyCppAD {
+  using namespace CppAD;
+
   template<class T>
   std::vector<T*> __vec_to_pvec__(std::vector<T>& v){
     std::vector<T*> ret(v.size());
@@ -14,6 +21,29 @@ namespace RubyCppAD {
       ret[i] = &(v[i]);
     }
     return ret;
+  }
+
+
+  VALUE cppad_rb_proc_call(VALUE args[]){
+    return rb_proc_call(args[0], args[1]);
+  }
+
+  void fg_eval(std::vector< AD<double>* >& fg, std::vector< AD<double>* >& x){
+    VALUE prc = rb_block_proc();
+    VALUE ret;
+    VALUE args[2];
+    args[0] = prc;
+    args[1] = swig::from< std::vector<AD<double>* > >(x);
+    ret = rb_rescue2(RUBY_METHOD_FUNC(cppad_rb_proc_call), (VALUE) args,
+                     0, 0, rb_eStandardError);
+    std::vector< AD<double>* > *z;
+    if( !NIL_P(ret) && SWIG_IsOK(swig::asptr(ret, &z)) ){
+      for(int i = 0; i < fg.size(); i++){
+        fg[i] = (*z)[i];
+      }
+    }else{
+      SWIG_Error(SWIG_RuntimeError, "Array of double expected");
+    }
   }
 };
 
@@ -121,7 +151,7 @@ public:
 };
 
 %template(ADDouble) AD<double>;
-%template(StdVectorADDoublePtr) ::std::vector<RubyCppAD::ADDouble*>;
+  // %template(StdVectorADDoublePtr) ::std::vector<RubyCppAD::ADDouble*>;
 %template(StdVectorDouble) ::std::vector<double>;
 %template(VectorWrapperDouble) RubyCppAD::VectorWrapper< RubyCppAD::AD<double> >;
 
