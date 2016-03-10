@@ -2,7 +2,7 @@ require "rake/extensiontask"
 require 'rake/testtask'
 require 'rake/clean'
 
-elibs = ["cppad"]
+elibs = ["cppad", "eigen"]
 
 elibs.each{|s|
   Rake::ExtensionTask.new s do |ext|
