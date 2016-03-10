@@ -1,3 +1,6 @@
 [submodule "ext/cppad/cppad"]
 	path = ext/cppad/cppad
 	url = git@github.com:ruby-eigen/CppAD.git
+[submodule "ext/eigen/ruby-eigen"]
+	path = ext/eigen/ruby-eigen
+	url = git@github.com:ruby-eigen/ruby-eigen.git
