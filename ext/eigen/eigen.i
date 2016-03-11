@@ -8,9 +8,33 @@
 
 
 %{
+#include <Eigen/Core>
+#include <Eigen/LU>
+#include <Eigen/Eigenvalues>
+#include <Eigen/QR>
+#include <Eigen/SVD>
+#include <Eigen/Cholesky>
+#include <Eigen/SparseCore>
+#include <Eigen/SparseCholesky>
+#include <Eigen/SparseLU>
+#include <Eigen/SparseQR>
+#include <Eigen/IterativeLinearSolvers>
+#include <Eigen/Sparse>
+%}
+
+%inline %{
+namespace Eigen {};
+namespace RubyEigen {
+  using namespace Eigen;
+};
+%}
+
+%{
 
 #include <stdexcept>
 #include <cppad/example/cppad_eigen.hpp>
+#include "ruby-eigen/ext/eigen/rubyeigen_algo.h"
+#include "ruby-eigen/ext/eigen/rubyeigen_base.h"
 
   namespace RubyCppAD {
     using namespace CppAD;
