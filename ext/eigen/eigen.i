@@ -8,6 +8,7 @@
 
 
 %{
+#define EIGEN_MATRIXBASE_PLUGIN <cppad/example/eigen_plugin.hpp>
 #include <Eigen/Core>
 #include <Eigen/LU>
 #include <Eigen/Eigenvalues>
@@ -35,17 +36,18 @@ namespace RubyEigen {
 #include <cppad/example/cppad_eigen.hpp>
 #include "ruby-eigen/ext/eigen/rubyeigen_algo.h"
 #include "ruby-eigen/ext/eigen/rubyeigen_base.h"
+#include "../cppad/rubycppad.h"
 
-  namespace RubyCppAD {
+  namespace RubyCppADEigen {
     using namespace CppAD;
-    typedef Eigen::Matrix< AD<double> , Eigen::Dynamic, Eigen::Dynamic > MatrixADDouble;
-    typedef Eigen::Matrix< AD<double> , Eigen::Dynamic, 1 > VectorADDouble;
+    typedef Eigen::Matrix< RubyCppAD::AD<double> , Eigen::Dynamic, Eigen::Dynamic > MatrixADDouble;
+    typedef Eigen::Matrix< RubyCppAD::AD<double> , Eigen::Dynamic, 1 > VectorADDouble;
   };
 
 %}
 
 
-namespace RubyCppAD {
+namespace RubyCppADEigen {
   class VectorADDouble {
   public:
     VectorADDouble(size_t);
@@ -58,4 +60,6 @@ namespace RubyCppAD {
     ~MatrixADDouble();
 
   };
+  void Independent( VectorADDouble& );
+
 };
